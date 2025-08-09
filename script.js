@@ -97,6 +97,22 @@ interface.addEventListener("click", (e) => {
         input.numTwo.push(0);
       }
       break;
+    case ".":
+      result = undefined;
+      if (input.operator === undefined) {
+        if (!input.numOne.includes(".")) {
+          input.numOne.push(".");
+        } else {
+          return;
+        }
+      } else {
+        if (!input.numTwo.includes(".")) {
+          input.numTwo.push(".");
+        } else {
+          return;
+        }
+      }
+      break;
     case "+":
       checks.stateCheck("+");
       break;
@@ -158,7 +174,12 @@ const checks = {
         result = operations.multiply(Number(tempOne), Number(tempTwo));
         break;
       case "/":
-        result = operations.divide(Number(tempOne), Number(tempTwo));
+        if (tempOne === "0" || tempTwo === "0") {
+          throw Error("Please don't attempt to create black holes");
+        } else {
+          result = operations.divide(Number(tempOne), Number(tempTwo));
+          result = checks.floatRounding(result);
+        }
         break;
     }
   },
@@ -181,6 +202,15 @@ const checks = {
       result = undefined;
     } else {
       input.operator = op;
+    }
+  },
+  floatRounding: function (r) {
+    if (r % 1 == 0) {
+      return r;
+    } else {
+      let p = Math.pow(10, 6);
+      let n = r * p * (1 + Number.EPSILON);
+      return Math.round(n) / p;
     }
   },
 };
