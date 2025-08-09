@@ -18,6 +18,7 @@ interface.addEventListener("click", (e) => {
 
   switch (target.id) {
     case "1":
+      result = undefined;
       if (input.operator === undefined) {
         input.numOne.push(1);
       } else {
@@ -25,6 +26,7 @@ interface.addEventListener("click", (e) => {
       }
       break;
     case "2":
+      result = undefined;
       if (input.operator === undefined) {
         input.numOne.push(2);
       } else {
@@ -32,6 +34,7 @@ interface.addEventListener("click", (e) => {
       }
       break;
     case "3":
+      result = undefined;
       if (input.operator === undefined) {
         input.numOne.push(3);
       } else {
@@ -39,6 +42,7 @@ interface.addEventListener("click", (e) => {
       }
       break;
     case "4":
+      result = undefined;
       if (input.operator === undefined) {
         input.numOne.push(4);
       } else {
@@ -46,6 +50,7 @@ interface.addEventListener("click", (e) => {
       }
       break;
     case "5":
+      result = undefined;
       if (input.operator === undefined) {
         input.numOne.push(5);
       } else {
@@ -53,6 +58,7 @@ interface.addEventListener("click", (e) => {
       }
       break;
     case "6":
+      result = undefined;
       if (input.operator === undefined) {
         input.numOne.push(6);
       } else {
@@ -60,6 +66,7 @@ interface.addEventListener("click", (e) => {
       }
       break;
     case "7":
+      result = undefined;
       if (input.operator === undefined) {
         input.numOne.push(7);
       } else {
@@ -67,6 +74,7 @@ interface.addEventListener("click", (e) => {
       }
       break;
     case "8":
+      result = undefined;
       if (input.operator === undefined) {
         input.numOne.push(8);
       } else {
@@ -74,6 +82,7 @@ interface.addEventListener("click", (e) => {
       }
       break;
     case "9":
+      result = undefined;
       if (input.operator === undefined) {
         input.numOne.push(9);
       } else {
@@ -81,6 +90,7 @@ interface.addEventListener("click", (e) => {
       }
       break;
     case "0":
+      result = undefined;
       if (input.operator === undefined) {
         input.numOne.push(0);
       } else {
@@ -88,41 +98,26 @@ interface.addEventListener("click", (e) => {
       }
       break;
     case "+":
-      input.operator = "+";
+      checks.stateCheck("+");
       break;
     case "-":
-      input.operator = "-";
+      checks.stateCheck("-");
       break;
     case "*":
-      input.operator = "*";
+      checks.stateCheck("*");
       break;
     case "/":
-      input.operator = "/";
+      checks.stateCheck("/");
       break;
     case "=":
       if (
-        input.numOne == [] ||
+        input.numOne[0] == undefined ||
         input.operator == undefined ||
-        input.numTwo == []
+        input.numTwo[0] == undefined
       ) {
-        break;
+        throw new Error("Please enter an expression");
       } else {
-        let tempOne = input.numOne.join("");
-        let tempTwo = input.numTwo.join("");
-        switch (input.operator) {
-          case "+":
-            result = operations.add(Number(tempOne), Number(tempTwo));
-            break;
-          case "-":
-            result = operations.subtract(Number(tempOne), Number(tempTwo));
-            break;
-          case "*":
-            result = operations.multiply(Number(tempOne), Number(tempTwo));
-            break;
-          case "/":
-            result = operations.divide(Number(tempOne), Number(tempTwo));
-            break;
-        }
+        checks.operatorCheck();
         input.numOne = [];
         input.operator = undefined;
         input.numTwo = [];
@@ -132,7 +127,7 @@ interface.addEventListener("click", (e) => {
       input.numOne = [];
       input.operator = undefined;
       input.numTwo = [];
-      result = "";
+      result = undefined;
       break;
   }
   console.log(input);
@@ -147,6 +142,48 @@ interface.addEventListener("click", (e) => {
   display.appendChild(dTwo);
   display.appendChild(outcome);
 });
+
+const checks = {
+  operatorCheck: function () {
+    let tempOne = input.numOne.join("");
+    let tempTwo = input.numTwo.join("");
+    switch (input.operator) {
+      case "+":
+        result = operations.add(Number(tempOne), Number(tempTwo));
+        break;
+      case "-":
+        result = operations.subtract(Number(tempOne), Number(tempTwo));
+        break;
+      case "*":
+        result = operations.multiply(Number(tempOne), Number(tempTwo));
+        break;
+      case "/":
+        result = operations.divide(Number(tempOne), Number(tempTwo));
+        break;
+    }
+  },
+  stateCheck: function (op) {
+    if (result !== undefined && input.numOne[0] === undefined) {
+      input.numOne.push(result);
+      result = undefined;
+      input.operator = op;
+    } else if (
+      result === undefined &&
+      input.numOne[0] !== undefined &&
+      input.operator !== undefined &&
+      input.numTwo[0] !== undefined
+    ) {
+      checks.operatorCheck();
+      input.operator = op;
+      input.numOne = [];
+      input.numTwo = [];
+      input.numOne.push(result);
+      result = undefined;
+    } else {
+      input.operator = op;
+    }
+  },
+};
 
 const operations = {
   add: function (a, b) {
