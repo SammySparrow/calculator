@@ -139,6 +139,18 @@ interface.addEventListener("click", (e) => {
         input.numTwo = [];
       }
       break;
+    case "backspace":
+      if (input.numTwo[0] !== undefined) {
+        input.numTwo.pop();
+      } else if (
+        input.numTwo[0] === undefined &&
+        input.operator !== undefined
+      ) {
+        input.operator = undefined;
+      } else {
+        input.numOne.pop();
+      }
+      break;
     case "clear":
       input.numOne = [];
       input.operator = undefined;
