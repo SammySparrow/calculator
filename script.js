@@ -3,237 +3,26 @@ const interface = document.querySelector("#buttons");
 const display = document.querySelector("#screen");
 const dOne = document.createElement("div");
 const dTwo = document.createElement("div");
-const op = document.createElement("div");
+const dOp = document.createElement("div");
 const outcome = document.createElement("div");
+
+display.appendChild(dOne);
+display.appendChild(dOp);
+display.appendChild(dTwo);
+display.appendChild(outcome);
+
+let numOne = "";
+let operator;
+let numTwo = "";
 let result;
 
-const input = {
-  numOne: [],
-  operator: undefined,
-  numTwo: [],
-};
-
-["keydown", "click"].forEach((logs) => {
-  calculator(logs);
-});
-
-function calculator(type) {
-  addEventListener(type, (e) => {
-    let target = e.target;
-    let keyTarget = e.key;
-
-    [target.id, keyTarget].forEach((tar) => {
-      switch (tar) {
-        case "1":
-          result = undefined;
-          if (input.operator === undefined) {
-            input.numOne.push(1);
-          } else {
-            input.numTwo.push(1);
-          }
-          break;
-        case "2":
-          result = undefined;
-          if (input.operator === undefined) {
-            input.numOne.push(2);
-          } else {
-            input.numTwo.push(2);
-          }
-          break;
-        case "3":
-          result = undefined;
-          if (input.operator === undefined) {
-            input.numOne.push(3);
-          } else {
-            input.numTwo.push(3);
-          }
-          break;
-        case "4":
-          result = undefined;
-          if (input.operator === undefined) {
-            input.numOne.push(4);
-          } else {
-            input.numTwo.push(4);
-          }
-          break;
-        case "5":
-          result = undefined;
-          if (input.operator === undefined) {
-            input.numOne.push(5);
-          } else {
-            input.numTwo.push(5);
-          }
-          break;
-        case "6":
-          result = undefined;
-          if (input.operator === undefined) {
-            input.numOne.push(6);
-          } else {
-            input.numTwo.push(6);
-          }
-          break;
-        case "7":
-          result = undefined;
-          if (input.operator === undefined) {
-            input.numOne.push(7);
-          } else {
-            input.numTwo.push(7);
-          }
-          break;
-        case "8":
-          result = undefined;
-          if (input.operator === undefined) {
-            input.numOne.push(8);
-          } else {
-            input.numTwo.push(8);
-          }
-          break;
-        case "9":
-          result = undefined;
-          if (input.operator === undefined) {
-            input.numOne.push(9);
-          } else {
-            input.numTwo.push(9);
-          }
-          break;
-        case "0":
-          result = undefined;
-          if (input.operator === undefined) {
-            input.numOne.push(0);
-          } else {
-            input.numTwo.push(0);
-          }
-          break;
-        case ".":
-          result = undefined;
-          if (input.operator === undefined) {
-            if (!input.numOne.includes(".")) {
-              input.numOne.push(".");
-            } else {
-              return;
-            }
-          } else {
-            if (!input.numTwo.includes(".")) {
-              input.numTwo.push(".");
-            } else {
-              return;
-            }
-          }
-          break;
-        case "+":
-          checks.stateCheck("+");
-          break;
-        case "-":
-          checks.stateCheck("-");
-          break;
-        case "*":
-          checks.stateCheck("*");
-          break;
-        case "/":
-          checks.stateCheck("/");
-          break;
-        case "=":
-          if (
-            input.numOne[0] == undefined ||
-            input.operator == undefined ||
-            input.numTwo[0] == undefined
-          ) {
-            throw new Error("Please enter an expression");
-          } else {
-            checks.operatorCheck();
-            input.numOne = [];
-            input.operator = undefined;
-            input.numTwo = [];
-          }
-          break;
-        case "Backspace":
-          if (input.numTwo[0] !== undefined) {
-            input.numTwo.pop();
-          } else if (
-            input.numTwo[0] === undefined &&
-            input.operator !== undefined
-          ) {
-            input.operator = undefined;
-          } else {
-            input.numOne.pop();
-          }
-          break;
-        case "clear":
-          input.numOne = [];
-          input.operator = undefined;
-          input.numTwo = [];
-          result = undefined;
-          break;
-      }
-    });
-
-    dOne.textContent = input.numOne.join("");
-    op.textContent = input.operator;
-    dTwo.textContent = input.numTwo.join("");
-    outcome.textContent = result;
-
-    display.appendChild(dOne);
-    display.appendChild(op);
-    display.appendChild(dTwo);
-    display.appendChild(outcome);
-  });
+function floatRounding() {
+  if (result % 1 !== 0) {
+    let p = Math.pow(10, 6);
+    let n = result * p * (1 + Number.EPSILON);
+    result = Math.round(n) / p;
+  }
 }
-
-const checks = {
-  operatorCheck: function () {
-    let tempOne = input.numOne.join("");
-    let tempTwo = input.numTwo.join("");
-    switch (input.operator) {
-      case "+":
-        result = operations.add(Number(tempOne), Number(tempTwo));
-        break;
-      case "-":
-        result = operations.subtract(Number(tempOne), Number(tempTwo));
-        break;
-      case "*":
-        result = operations.multiply(Number(tempOne), Number(tempTwo));
-        break;
-      case "/":
-        if (tempOne === "0" || tempTwo === "0") {
-          throw Error("Please don't attempt to create black holes");
-        } else {
-          result = operations.divide(Number(tempOne), Number(tempTwo));
-          result = checks.floatRounding(result);
-        }
-        break;
-    }
-  },
-  stateCheck: function (op) {
-    if (result !== undefined && input.numOne[0] === undefined) {
-      input.numOne.push(result);
-      result = undefined;
-      input.operator = op;
-    } else if (
-      result === undefined &&
-      input.numOne[0] !== undefined &&
-      input.operator !== undefined &&
-      input.numTwo[0] !== undefined
-    ) {
-      checks.operatorCheck();
-      input.operator = op;
-      input.numOne = [];
-      input.numTwo = [];
-      input.numOne.push(result);
-      result = undefined;
-    } else {
-      input.operator = op;
-    }
-  },
-  floatRounding: function (r) {
-    if (r % 1 == 0) {
-      return r;
-    } else {
-      let p = Math.pow(10, 6);
-      let n = r * p * (1 + Number.EPSILON);
-      return Math.round(n) / p;
-    }
-  },
-};
 
 const operations = {
   add: function (a, b) {
@@ -249,3 +38,137 @@ const operations = {
     return a / b;
   },
 };
+
+function numberInput(n) {
+  if (operator === undefined) {
+    numOne = numOne + n;
+  } else {
+    numTwo = numTwo + n;
+  }
+}
+
+function decimals() {
+  if (operator === undefined) {
+    if (!numOne.includes(".")) {
+      numOne = numOne + ".";
+    } else {
+      return;
+    }
+  } else {
+    if (!numTwo.includes(".")) {
+      numTwo = numTwo + ".";
+    } else {
+      return;
+    }
+  }
+}
+
+function updateDiv() {
+  dOne.textContent = numOne;
+  dOp.textContent = operator;
+  dTwo.textContent = numTwo;
+  outcome.textContent = result;
+}
+
+function backspace() {
+  if (numTwo !== "") {
+    numTwo.slice(0, -1);
+  } else if (numTwo === undefined && operator !== undefined) {
+    operator = undefined;
+  } else {
+    numOne.slice(0, -1);
+  }
+}
+
+function clear() {
+  numOne = "";
+  operator = undefined;
+  numTwo = "";
+  result = undefined;
+}
+
+function calculateExpression() {
+  if (numOne === "" || operator === undefined || numTwo === "") {
+    throw new Error("Please enter an expression");
+  } else {
+    checks.operatorCheck();
+    numOne = "";
+    operator = undefined;
+    numTwo = "";
+  }
+}
+
+function calculatorLogic(input) {
+  if (/[0-9]/.test(input)) {
+    numberInput(input);
+  } else if (input === "+" || input === "-" || input === "*" || input === "/") {
+    checks.stateCheck(input);
+  } else if (input === "=") {
+    calculateExpression();
+  } else if (input === ".") {
+    decimals();
+  } else if (input === "Backspace") {
+    backspace();
+  } else if (input === "clear" || input === "Escape") {
+    clear();
+  }
+}
+
+function clickOrKey() {
+  ["keydown", "click"].forEach((type) => {
+    addEventListener(type, (e) => {
+      let clickInitial = e.target;
+      let click = clickInitial.id;
+      let key = e.key;
+
+      [click, key].forEach((input) => calculatorLogic(input));
+      updateDiv();
+    });
+  });
+}
+
+const checks = {
+  operatorCheck: function () {
+    switch (operator) {
+      case "+":
+        result = operations.add(Number(numOne), Number(numTwo));
+        break;
+      case "-":
+        result = operations.subtract(Number(numOne), Number(numTwo));
+        break;
+      case "*":
+        result = operations.multiply(Number(numOne), Number(numTwo));
+        break;
+      case "/":
+        if (numOne === "0" || numTwo === "0") {
+          throw Error("Please don't attempt to create black holes");
+        } else {
+          result = operations.divide(Number(numOne), Number(numTwo));
+        }
+        break;
+    }
+    floatRounding();
+  },
+  stateCheck: function (op) {
+    if (result !== undefined && numOne === "") {
+      numOne = result;
+      result = undefined;
+      operator = op;
+    } else if (
+      result === undefined &&
+      numOne !== "" &&
+      operator !== undefined &&
+      numTwo !== ""
+    ) {
+      checks.operatorCheck();
+      operator = op;
+      numTwo = "";
+      numOne = result;
+      result = undefined;
+    } else {
+      operator = op;
+    }
+  },
+};
+
+clickOrKey();
